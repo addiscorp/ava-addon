@@ -1,0 +1,23 @@
+{
+  "name": "@addiscorp/ava-addon",
+  "version": "0.1.0",
+  "description": "Types and a typed accessor for Ava's add-on client (window.ava, served by Ava at /ava.js), and the add-on manifest.",
+  "license": "MIT",
+  "author": "Sami Fouad",
+  "repository": { "type": "git", "url": "git+https://github.com/addiscorp/ava-addon.git" },
+  "homepage": "https://ava.addis.gg/addons",
+  "type": "module",
+  "main": "./index.js",
+  "types": "./index.d.ts",
+  "exports": {
+    ".": { "types": "./index.d.ts", "default": "./index.js" }
+  },
+  "files": ["index.js", "index.d.ts"],
+  "publishConfig": { "access": "public", "provenance": true },
+  "scripts": {
+    "check": "tsc --noEmit -p ."
+  },
+  "devDependencies": {
+    "typescript": "5.9.3"
+  }
+}
