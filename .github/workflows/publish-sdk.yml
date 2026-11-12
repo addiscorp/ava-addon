@@ -63,10 +63,12 @@ jobs:
         run: |
           set -euo pipefail
           v="${{ steps.version.outputs.version }}"
-          for _ in 1 2 3 4 5 6; do
+          # npm says a new version "may take a few minutes to become
+          # available": wait up to 10 minutes.
+          for _ in $(seq 1 30); do
             got="$(npm view "@addiscorp/ava-addon@$v" version 2>/dev/null || true)"
             [ "$got" = "$v" ] && { echo "@addiscorp/ava-addon@$v is on npm"; exit 0; }
-            sleep 10
+            sleep 20
           done
-          echo "::error::@addiscorp/ava-addon@$v didn't appear on npm after publishing"
+          echo "::error::@addiscorp/ava-addon@$v didn't appear on npm within 10 minutes of publishing"
           exit 1
