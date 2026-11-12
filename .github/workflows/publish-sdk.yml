@@ -1,0 +1,72 @@
+# Publish @addiscorp/ava-addon to npm.
+#
+# npm trusted publishing (OIDC): the package trusts this repo, this workflow
+# file (publish-sdk.yml) and the `release` environment. No npm token exists
+# anywhere. It publishes directly with provenance, never staged.
+# Runners (APS 11): publish jobs run on GitHub-hosted runners, which npm
+# trusted publishing requires and which are free for this public repo.
+#
+# It runs on every push to main (and by hand), and publishes only when
+# package.json's version isn't on npm yet, so re-runs are harmless.
+name: Publish SDK
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+concurrency:
+  group: publish-sdk
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-24.04
+    environment: release
+    timeout-minutes: 15
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: '24'
+          registry-url: 'https://registry.npmjs.org'
+      # Trusted publishing needs npm 11.5.1 or later.
+      - run: npm install -g npm@11.6.2
+      - name: Is this version already on npm?
+        id: version
+        run: |
+          set -euo pipefail
+          v="$(node -p "require('./package.json').version")"
+          echo "version=$v" >> "$GITHUB_OUTPUT"
+          if [ -n "$(npm view "@addiscorp/ava-addon@$v" version 2>/dev/null || true)" ]; then
+            echo "published=true" >> "$GITHUB_OUTPUT"
+            echo "::notice::@addiscorp/ava-addon@$v is already on npm: nothing to publish."
+          else
+            echo "published=false" >> "$GITHUB_OUTPUT"
+          fi
+      - if: steps.version.outputs.published == 'false'
+        name: Check the SDK
+        run: |
+          npm ci --ignore-scripts --no-audit --no-fund
+          npm run check
+      - if: steps.version.outputs.published == 'false'
+        name: Publish
+        run: npm publish --access public --provenance
+      - if: steps.version.outputs.published == 'false'
+        name: Read it back from the registry
+        run: |
+          set -euo pipefail
+          v="${{ steps.version.outputs.version }}"
+          for _ in 1 2 3 4 5 6; do
+            got="$(npm view "@addiscorp/ava-addon@$v" version 2>/dev/null || true)"
+            [ "$got" = "$v" ] && { echo "@addiscorp/ava-addon@$v is on npm"; exit 0; }
+            sleep 10
+          done
+          echo "::error::@addiscorp/ava-addon@$v didn't appear on npm after publishing"
+          exit 1
