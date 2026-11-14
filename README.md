@@ -1,6 +1,6 @@
 # @addiscorp/ava-addon
 
-The SDK for building [ava](https://ava.addis.gg) add-ons:
+The SDK for building [ava](https://heyava.ca) add-ons:
 - types for `window.ava`, the client Ava serves to every add-on at `/ava.js`;
 - types for the add-on manifest.
 

@@ -5,7 +5,7 @@
   "license": "MIT",
   "author": "Sami Fouad",
   "repository": { "type": "git", "url": "git+https://github.com/addiscorp/ava-addon.git" },
-  "homepage": "https://ava.addis.gg/addons",
+  "homepage": "https://heyava.ca/addons",
   "type": "module",
   "main": "./index.js",
   "types": "./index.d.ts",
