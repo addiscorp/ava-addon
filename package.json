@@ -1,10 +1,10 @@
 {
-  "name": "@addiscorp/ava-addon",
-  "version": "0.1.0",
+  "name": "@avacanada/ava-addon",
+  "version": "0.2.0",
   "description": "Types and a typed accessor for Ava's add-on client (window.ava, served by Ava at /ava.js), and the add-on manifest.",
   "license": "MIT",
   "author": "Sami Fouad",
-  "repository": { "type": "git", "url": "git+https://github.com/addiscorp/ava-addon.git" },
+  "repository": { "type": "git", "url": "git+https://github.com/avacanada/ava-addon.git" },
   "homepage": "https://heyava.ca/addons",
   "type": "module",
   "main": "./index.js",

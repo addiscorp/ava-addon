@@ -1,4 +1,6 @@
-# Publish @addiscorp/ava-addon to npm.
+# Publish @avacanada/ava-addon to npm (it was @addiscorp/ava-addon up to
+# 0.1.0). Every step names the package from package.json, so a rename is one
+# line there.
 #
 # npm trusted publishing (OIDC): the package trusts this repo, this workflow
 # file (publish-sdk.yml) and the `release` environment. No npm token exists
@@ -42,11 +44,13 @@ jobs:
         id: version
         run: |
           set -euo pipefail
+          name="$(node -p "require('./package.json').name")"
           v="$(node -p "require('./package.json').version")"
+          echo "name=$name" >> "$GITHUB_OUTPUT"
           echo "version=$v" >> "$GITHUB_OUTPUT"
-          if [ -n "$(npm view "@addiscorp/ava-addon@$v" version 2>/dev/null || true)" ]; then
+          if [ -n "$(npm view "$name@$v" version 2>/dev/null || true)" ]; then
             echo "published=true" >> "$GITHUB_OUTPUT"
-            echo "::notice::@addiscorp/ava-addon@$v is already on npm: nothing to publish."
+            echo "::notice::$name@$v is already on npm: nothing to publish."
           else
             echo "published=false" >> "$GITHUB_OUTPUT"
           fi
@@ -62,13 +66,14 @@ jobs:
         name: Read it back from the registry
         run: |
           set -euo pipefail
+          name="${{ steps.version.outputs.name }}"
           v="${{ steps.version.outputs.version }}"
           # npm says a new version "may take a few minutes to become
           # available": wait up to 10 minutes.
           for _ in $(seq 1 30); do
-            got="$(npm view "@addiscorp/ava-addon@$v" version 2>/dev/null || true)"
-            [ "$got" = "$v" ] && { echo "@addiscorp/ava-addon@$v is on npm"; exit 0; }
+            got="$(npm view "$name@$v" version 2>/dev/null || true)"
+            [ "$got" = "$v" ] && { echo "$name@$v is on npm"; exit 0; }
             sleep 20
           done
-          echo "::error::@addiscorp/ava-addon@$v didn't appear on npm within 10 minutes of publishing"
+          echo "::error::$name@$v didn't appear on npm within 10 minutes of publishing"
           exit 1
