@@ -1,6 +1,6 @@
 # Type-check the SDK and its usage example on every PR and on main.
-# Runners: this repo is public, so CI runs on GitHub-hosted runners like the
-# other public addiscorp repos (rixse, mirab).
+# Runners: this repo is public, so CI runs on GitHub-hosted runners, as
+# public repos may (APS 11, as Sami amended it on 10-12 Nov).
 name: CI
 
 on:
