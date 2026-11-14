@@ -63,6 +63,12 @@ export function ava(): AvaClient
 /** What one of an add-on's tools does: reads, changes its own files, or reaches outside (Ava asks the person). */
 export type Effect = 'read' | 'inside' | 'outside'
 export type Permission = 'files' | 'storage' | 'tools' | 'network'
+/**
+ * With the 'files' permission, whether the add-on's tools need a picked folder or file:
+ * 'needed' (the default) means Ava offers them only once the person picked one;
+ * 'optional' means they work without, and the add-on only sometimes asks for files.
+ */
+export type FilesUse = 'needed' | 'optional'
 
 /** manifest.json at the root of an add-on's bundle. */
 export type Manifest = {
@@ -75,6 +81,8 @@ export type Manifest = {
   entry?: string
   icon?: string
   permissions?: Permission[]
+  /** Only with the 'files' permission; left out, it's 'needed'. */
+  files?: FilesUse
   /** Hosts it may reach through `ava.net.fetch` (needs 'network'). */
   egress?: string[]
   tools?: { name: string; description: string; effect: Effect; input_schema: Record<string, unknown> }[]

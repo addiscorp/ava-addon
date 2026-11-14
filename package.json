@@ -1,6 +1,6 @@
 {
   "name": "@avacanada/ava-addon",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Types and a typed accessor for Ava's add-on client (window.ava, served by Ava at /ava.js), and the add-on manifest.",
   "license": "MIT",
   "author": "Sami Fouad",

@@ -18,3 +18,16 @@ export const manifest: Manifest = {
   permissions: ['files', 'tools'],
   tools: [{ name: 'add', description: 'Add an image.', effect: 'inside', input_schema: { type: 'object' } }],
 }
+
+// Files only for import and export: its tools reach Ava without a picked folder.
+export const whiteboard: Manifest = {
+  id: 'whiteboard',
+  name: 'Whiteboard',
+  version: '1.0.0',
+  permissions: ['files', 'tools'],
+  files: 'optional',
+  tools: [{ name: 'draw', description: 'Draw a shape.', effect: 'inside', input_schema: { type: 'object' } }],
+}
+
+// @ts-expect-error: 'needed' or 'optional', nothing else.
+export const sometimes: Manifest = { id: 'sometimes', name: 'Sometimes', version: '1.0.0', permissions: ['files'], files: 'sometimes' }
